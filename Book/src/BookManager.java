@@ -96,4 +96,30 @@ public class BookManager {
         System.out.println("해당 도서가 없습니다.");
         return 0; // 제거 실패 시 0을 반환
     }
+    
+    public int search_bs(int id) {
+        int left = 0; // 이진 탐색의 왼쪽 경계
+        int right = books.size() - 1; // 이진 탐색의 오른쪽 경계
+
+        // 이진 탐색 시작
+        while (left <= right) {
+            int mid = left + (right - left) / 2; // 중간 인덱스 계산
+            Book midBook = books.get(mid); // 중간 인덱스의 책 객체 가져오기
+
+            if (midBook.id == id) {
+                System.out.println("검색 결과: ");
+                System.out.println("Book{ id: " + midBook.id + ", title: " + midBook.title + ", author: " + midBook.author + ", printed year: " + midBook.year + "}");
+                return 1; // 검색 성공 시 1을 반환
+            }
+
+            if (midBook.id < id) {
+                left = mid + 1; // 왼쪽 경계를 중간 다음 요소로 이동
+            } else {
+                right = mid - 1; // 오른쪽 경계를 중간 이전 요소로 이동
+            }
+        }
+
+        System.out.println("검색된 도서가 없습니다.");
+        return 0; // 검색 실패 시 0을 반환
+    }
 }
