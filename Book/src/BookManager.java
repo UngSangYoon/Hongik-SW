@@ -52,7 +52,7 @@ public class BookManager {
     public int addBook(int id, String title, String author, int year) {
         for (Book book : books) {
             if (book.id == id) {
-                System.out.println("해당 id (" + id + ")는 이미 존재합니다.");
+                System.out.println("해당 ID(" + id + ")는 이미 존재합니다.");
                 return 0; // 책이 이미 존재하면 0을 반환
             }
         }
