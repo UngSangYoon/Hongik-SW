@@ -1,6 +1,6 @@
 # Hongik-SW
 
-윤웅상 : search_bs(), Jenkinsfile 작성
+윤웅상 : search_bs() 작성
 
 오하영 : Junit Test 작성
 
