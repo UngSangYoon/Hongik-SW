@@ -9,39 +9,20 @@ pipeline {
         }
         stage('Build') {
             steps {
-                script {
-                    if (isUnix()) {
-                        // classes 디렉토리 생성 (Unix)
-                        sh 'mkdir -p classes'
-                        // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장 (Unix)
-                        sh 'javac -encoding UTF-8 -d classes $(find Book/src -name "*.java")'
-                    } else {
-                        // classes 디렉토리 생성 (Windows)
-                        bat 'mkdir classes'
-                        // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장 (Windows)
-                        bat 'javac -encoding UTF-8 -d classes Book\\src\\*.java'
-                    }
-                }
+                // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
+                sh 'javac -encoding UTF-8 -d classes Practice/src/**/*.java'
             }
         }
         stage('Test') {
             steps {
-                script {
-                    if (isUnix()) {
-                        // JUnit 5 테스트 실행을 위한 classpath 설정 (Unix)
-                        def classpath = "classes:lib/junit-platform-console-standalone-1.7.1.jar"
-                        // JUnit 5 테스트 실행 (Unix)
-                        sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
-                    } else {
-                        // JUnit 5 테스트 실행을 위한 classpath 설정 (Windows)
-                        def classpath = 'classes;lib\\junit-platform-console-standalone-1.7.1.jar'
-                        // JUnit 5 테스트 실행 (Windows)
-                        bat "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
-                    }
+                // JUnit 5 테스트 실행을 위한 classpath 설정
+                def classpath = "classes:lib/junit-platform-console-standalone-1.7.1.jar"
+                // JUnit 5 테스트 실행
+                sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
                 }
             }
         }
-    }
+    
     post {
         always {
             // 테스트 결과 파일을 저장하기 위해 아카이브
@@ -55,4 +36,3 @@ pipeline {
         }
     }
 }
-
