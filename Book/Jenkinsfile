@@ -1,39 +1,82 @@
 pipeline {
-  agent any
-  stages {
-    stage('Checkout') {
-      steps {
-        // 소스코드 체크아웃
-        checkout scm
-      }
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                // 소스코드 체크아웃
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
+                sh 'javac -encoding UTF-8 -d classes Book/src/*.java'
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    // JUnit 5 테스트 실행을 위한 classpath 설정
+                    def classpath = "classes:lib/junit-platform-console-standalone-1.7.1.jar"
+                    // JUnit 5 테스트 실행
+                    sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
+                }
+            }
+        }
     }
-    stage('Build') {
-      steps {
-        // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
-        // window 일 경우 bat
-        sh 'javac -encoding UTF-8 -d classes Book/src/*.java'
-      }
-    }
-    stage('Test') {
-      steps {
-        // JUnit 5 테스트 실행을 위한 classpath 설정
-        def classpath = "classes;lib/;
-        /Users/yun-ungsang/.p2/pool/plugins/junit-platform-console-standalone-1.7.1.jar"
-        // JUnit 5 테스트 실행
-        bat 'java -cp classes;lib/; /Users/yun-ungsang/.p2/pool/plugins/junit-platform-console-standalone-1.7.1.jar
-        org.junit.platform.console.ConsoleLauncher --scan-classpath >
-        test_results.txt'
-      }
+    post {
+        always {
+            // 테스트 결과 파일을 저장하기 위해 아카이브
+            archiveArtifacts 'test_results.txt'
+        }
+        failure {
+            echo 'Build or test failed'
+        }
+        success {
+            echo 'Build and test succeeded'
+        }
     }
 }
-post {
-  always {
-    // 테스트 결과 파일을 저장하기 위해 아카이브
-    archiveArtifacts 'test_results.txt'
-  }
-  failure {
-    echo ‘Build or test failed'
-  }
-  success {
-    echo ‘Build and test succeeded'
-  }
+위의 Jenkinsfile은 Unix 기반 시스템을 기준으로 작성되었습니다. Windows 시스템에서는 sh 명령어 대신 bat 명령어를 사용해야 하므로 다음과 같이 수정할 수 있습니다:
+
+groovy
+코드 복사
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                // 소스코드 체크아웃
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
+                bat 'javac -encoding UTF-8 -d classes Book/src/*.java'
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    // JUnit 5 테스트 실행을 위한 classpath 설정
+                    def classpath = 'classes;lib\\junit-platform-console-standalone-1.7.1.jar'
+                    // JUnit 5 테스트 실행
+                    bat "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            // 테스트 결과 파일을 저장하기 위해 아카이브
+            archiveArtifacts 'test_results.txt'
+        }
+        failure {
+            echo 'Build or test failed'
+        }
+        success {
+            echo 'Build and test succeeded'
+        }
+    }
+}
