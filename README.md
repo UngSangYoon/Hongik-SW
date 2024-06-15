@@ -28,3 +28,6 @@ JUnit 라이브러리 JAR 파일들을 다운로드하는 Setup stage를 추가�
 
 # result (test_results.txt)
 ![image](https://github.com/UngSangYoon/Hongik-SW/assets/124053569/7df28072-7388-4ab7-8759-6632ba54df75)
+
+# git repo
+https://github.com/UngSangYoon/Hongik-SW
