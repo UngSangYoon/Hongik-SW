@@ -27,26 +27,42 @@ public class PerformanceTest {
 
     @Test
     public void testSearchBookPerformance() {
-        long startTime = System.nanoTime();
-        int result = mgr.searchBook(500);
-        long endTime = System.nanoTime();
-        long duration = endTime - startTime;
+    	int[] idsToSearch = {1, 250, 500, 750, 1000, 1500}; // Searched ID list (마지막 ID는 존재하지 않는 ID)
 
-        System.out.println("Linear Search Duration: " + duration + " nanoseconds");
+        for (int id : idsToSearch) {
+            long startTime = System.nanoTime();
+            int result = mgr.searchBook(id);
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
 
-        assertEquals(1, result); // 검색 성공 시 1을 반환해야 합니다.
+            System.out.println("Linear Search Duration for ID " + id + ": " + duration + " nanoseconds");
+
+            if (id <= 1000) {
+                assertEquals(1, result); // 검색 성공 시 1을 반환해야 합니다.
+            } else {
+                assertEquals(0, result); // 검색 실패 시 0을 반환해야 합니다.
+            }
+        }
     }
 
     @Test
     public void testSearchBsPerformance() {
-        long startTime = System.nanoTime();
-        int result = mgr.search_bs(500);
-        long endTime = System.nanoTime();
-        long duration = endTime - startTime;
+    	int[] idsToSearch = {1, 250, 500, 750, 1000, 1500}; // Searched ID list (마지막 ID는 존재하지 않는 ID)
+  
+    	for (int id : idsToSearch) {
+            long startTime = System.nanoTime();
+            int result = mgr.search_bs(id);
+            long endTime = System.nanoTime();
+            long duration = endTime - startTime;
 
-        System.out.println("Binary Search Duration: " + duration + " nanoseconds");
-
-        assertEquals(1, result); // 검색 성공 시 1을 반환해야 합니다.
+            System.out.println("Binary Search Duration for ID " + id + ": " + duration + " nanoseconds");
+            
+            if (id <= 1000) {
+                assertEquals(1, result); // 검색 성공 시 1을 반환해야 합니다.
+            } else {
+                assertEquals(0, result); // 검색 실패 시 0을 반환해야 합니다.
+            }
+    	}
     }
 }
 
