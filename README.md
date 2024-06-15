@@ -5,7 +5,7 @@
 오하영 : Junit Test 작성
 
 # Git Error
-![image](https://github.com/UngSangYoon/Hongik-SW/assets/124053569/4406f7ce-a706-4f20-91ce-671209ba18be)
+![image](https://github.com/UngSangYoon/Hongik-SW/assets/124053569/7e58863b-b9ee-4758-89e4-ec4fa41f0934)
 
 Local Branch 에서 수정 후 commit 하지 않은 채 원격 repo를 pull 시도하여 발생
 
