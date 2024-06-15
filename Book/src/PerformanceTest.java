@@ -3,7 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.PrintStream;
 
-public class performanceTest {
+public class PerformanceTest {
 	BookManager mgr;
 	PrintStream originalOut = System.out;
     PrintStream dummyOut = new PrintStream(new java.io.OutputStream() {
