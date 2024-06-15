@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        JUNIT_VERSION = '5.7.0'
+        JUNIT_PLATFORM_VERSION = '1.7.1'
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -7,17 +11,30 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Setup') {
+            steps {
+                // 필요한 디렉토리 생성
+                sh 'mkdir -p lib classes'
+                
+                // JUnit 라이브러리 다운로드
+                sh '''
+                curl -L -o lib/junit-jupiter-api-${JUNIT_VERSION}.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/${JUNIT_VERSION}/junit-jupiter-api-${JUNIT_VERSION}.jar
+                curl -L -o lib/junit-jupiter-engine-${JUNIT_VERSION}.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/${JUNIT_VERSION}/junit-jupiter-engine-${JUNIT_VERSION}.jar
+                curl -L -o lib/junit-platform-console-standalone-${JUNIT_PLATFORM_VERSION}.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/${JUNIT_PLATFORM_VERSION}/junit-platform-console-standalone-${JUNIT_PLATFORM_VERSION}.jar
+                '''
+            }
+        }
         stage('Build') {
             steps {
                 // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
-                sh 'javac -encoding UTF-8 -d classes Book/src/*.java'
+                sh 'javac -encoding UTF-8 -cp lib/junit-jupiter-api-${JUNIT_VERSION}.jar:lib/junit-jupiter-engine-${JUNIT_VERSION}.jar:lib/junit-platform-console-standalone-${JUNIT_PLATFORM_VERSION}.jar -d classes Book/src/*.java'
             }
         }
         stage('Test') {
             steps {
                 script {
                     // JUnit 5 테스트 실행을 위한 classpath 설정
-                    def classpath = "classes:lib/junit-platform-console-standalone-1.7.1.jar"
+                    def classpath = "classes:lib/junit-platform-console-standalone-${JUNIT_PLATFORM_VERSION}.jar:lib/junit-jupiter-api-${JUNIT_VERSION}.jar:lib/junit-jupiter-engine-${JUNIT_VERSION}.jar"
                     // JUnit 5 테스트 실행
                     sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
                 }
@@ -37,3 +54,4 @@ pipeline {
         }
     }
 }
+
